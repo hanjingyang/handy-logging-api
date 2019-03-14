@@ -16,6 +16,10 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-s3</artifactId>
 		</dependency>
@@ -58,17 +62,41 @@
 				<groupId>com.spotify</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>0.4.12</version>
+				<executions>
+					<execution>
+						<id>build-image</id>
+						<phase>package</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>tag-image</id>
+						<phase>package</phase>
+						<goals>
+							<goal>tag</goal>
+						</goals>
+						<configuration>
+							<image>${project.artifactId}:latest</image>
+							<newName>204328232493.dkr.ecr.ap-southeast-1.amazonaws.com/${project.artifactId}:latest</newName>
+						</configuration>
+					</execution>
+				</executions>
 				<!--docker镜像相关的配置信息 -->
 				<configuration>
 					<forceTags>true</forceTags>
 					<!--镜像名，这里用工程名 -->
-					<imageName>handy-logs</imageName>
+					<imageName>${project.artifactId}</imageName>
 					<!--Dockerfile文件所在目录 -->
 					<dockerDirectory>${project.basedir}</dockerDirectory>
 					<!--TAG,这里用工程版本号 -->
 					<imageTags>
-						<imageTag>${project.version}</imageTag>
+						<imageTag>latest</imageTag>
 					</imageTags>
+					<!--buildArgs,这里配置打出的包名 -->
+					<buildArgs>
+						<JAR_FILE_NAME>${project.build.finalName}.jar</JAR_FILE_NAME>
+					</buildArgs>
 					<!--构建镜像的配置信息 -->
 					<resources>
 						<resource>
