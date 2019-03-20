@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tinklabs.handy.mapper.LogMapper">
+
+	<insert id="addDeviceChangeLog" parameterType="java.util.List">
+		insert into device_change_logs(
+			user_id,
+			barcode,
+			device_id,
+			hotel_id,
+			hotel_room_number,
+			status,
+			user_name,
+			debug,
+			debug_package,
+			service_provider,
+			sim_id,
+			country_code,
+			phone_number,
+			version,
+			device_sim_id,
+			caller,
+			created,
+			modified
+		) values
+		<foreach collection="list" item="item" separator=",">
+		(
+			#{item.userId, jdbcType=NUMERIC},
+			#{item.barcode, jdbcType=VARCHAR},
+			#{item.deviceId, jdbcType=NUMERIC},
+			#{item.hotelId, jdbcType=NUMERIC},
+			#{item.hotelRoomNumber, jdbcType=VARCHAR},
+			#{item.status, jdbcType=VARCHAR},
+			#{item.userName, jdbcType=VARCHAR},
+			#{item.debug, jdbcType=VARCHAR},
+			#{item.debugPackage, jdbcType=VARCHAR},
+			#{item.serviceProvider, jdbcType=VARCHAR},
+			#{item.simId, jdbcType=VARCHAR},
+			#{item.countryCode, jdbcType=VARCHAR},
+			#{item.phoneNumber, jdbcType=VARCHAR},
+			#{item.version, jdbcType=VARCHAR},
+			#{item.deviceSimId, jdbcType=VARCHAR},
+			#{item.caller, jdbcType=VARCHAR},
+			<choose>
+				<when test="item.created !=null and item.created !=''">
+					str_to_date(#{item.created}, '%Y-%m-%d %H:%i:%s'),
+				</when>
+				<otherwise>
+					now(),
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="item.created !=null and item.created !=''">
+					str_to_date(#{item.modified}, '%Y-%m-%d %H:%i:%s')
+				</when>
+				<otherwise>
+					now()
+				</otherwise>
+			</choose>
+		)
+		</foreach>
+	</insert>
+
+	<insert id="addEmailQueueLog" parameterType="java.util.List">
+		insert into email_queues(
+		  `from`,
+		  `to`,
+		  subject,
+		  config,
+		  data,
+		  response,
+		  error,
+		  is_failed,
+		  failed_at,
+		  is_delivered,
+		  delivered_at,
+		  is_opened,
+		  opened_at,
+		  tried,
+		  sent,
+		  status,
+		  created,
+		  updated
+		) values
+		<foreach collection="list" item="item" separator=",">
+		(
+			#{item.from, jdbcType=VARCHAR},
+			#{item.to, jdbcType=VARCHAR},
+			#{item.subject, jdbcType=VARCHAR},
+			#{item.config, jdbcType=VARCHAR},
+			#{item.data, jdbcType=VARCHAR},
+			#{item.response, jdbcType=VARCHAR},
+			#{item.error, jdbcType=VARCHAR},
+			#{item.isFailed, jdbcType=NUMERIC},
+			<choose>
+				<when test="item.failedAt != null and item.failedAt !=''">
+					str_to_date(#{item.failedAt}, '%Y-%m-%d %H:%i:%s'),
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+			#{item.isDelivered, jdbcType=NUMERIC},
+			<choose>
+				<when test="item.deliveredAt != null and item.deliveredAt != ''">
+					str_to_date(#{item.deliveredAt}, '%Y-%m-%d %H:%i:%s'),
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+			#{item.isOpened, jdbcType=NUMERIC},
+			<choose>
+				<when test="item.openedAt != null and item.openedAt != ''">
+					str_to_date(#{item.openedAt}, '%Y-%m-%d %H:%i:%s'),
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>	
+			#{item.tried, jdbcType=NUMERIC},
+			<choose>
+				<when test="item.sent != null and item.sent != ''">
+					str_to_date(#{item.sent}, '%Y-%m-%d %H:%i:%s'),
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+			#{item.status, jdbcType=VARCHAR},
+			<choose>
+				<when test="item.created != null and item.created != ''">
+					str_to_date(#{item.created}, '%Y-%m-%d %H:%i:%s'),
+				</when>
+				<otherwise>
+					now(),
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="item.updated != null and item.updated != ''">
+					str_to_date(#{item.updated}, '%Y-%m-%d %H:%i:%s')
+				</when>
+				<otherwise>
+					now()
+				</otherwise>
+			</choose>	
+		)					
+		</foreach>
+	</insert>
+
+	<insert id="addInvaldBarcodeLog">
+		insert into invalid_barcodes(
+		  barcode,
+		  url,
+		  domain,
+		  mock_action,
+		  cookie_version,
+		  cookie_package_name,
+		  cookie_allversion,
+		  cookie_sim,
+		  cookie_model,
+		  cookie_data,
+		  status,
+		  created,
+		  modified
+		) values 
+		<foreach collection="list" item="item" separator=",">
+		(
+			#{item.barcode, jdbcType=VARCHAR},
+			#{item.url, jdbcType=VARCHAR},
+			#{item.domain, jdbcType=VARCHAR},
+			#{item.mockAction, jdbcType=VARCHAR},
+			#{item.cookieVersion, jdbcType=VARCHAR},
+			#{item.cookiePackageName, jdbcType=VARCHAR},
+			#{item.cookieAllversion, jdbcType=VARCHAR},
+			#{item.cookieSim, jdbcType=VARCHAR},
+			#{item.cookieModel, jdbcType=VARCHAR},
+			<choose>
+				<when test="item.cookieData != null and item.cookieData != ''">
+				    str_to_date(#{item.cookieData}, '%Y-%m-%d %H:%i:%s'),
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+			#{item.status, jdbcType=NUMERIC},
+			<choose>
+				<when test="item.created != null and item.created != ''">
+				    str_to_date(#{item.created}, '%Y-%m-%d %H:%i:%s'),
+				</when>
+				<otherwise>
+					now(),
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="item.modified != null and item.modified != ''">
+				    str_to_date(#{item.modified}, '%Y-%m-%d %H:%i:%s')
+				</when>
+				<otherwise>
+					now()
+				</otherwise>
+			</choose>	
+		)					
+		</foreach>
+	</insert>
+
+	<insert id="addDeviceOtaStatusLog">
+		insert into device_ota_status(
+			device_id,
+			status,
+			version,
+			ota_id,
+			ota_type,
+			created,
+			modified
+		) values
+		<foreach collection="list" item="item" separator=",">
+		(
+			#{item.deviceId, jdbcType=NUMERIC},
+			#{item.status, jdbcType=VARCHAR},
+			#{item.version, jdbcType=VARCHAR},
+			#{item.otaId, jdbcType=NUMERIC},
+			#{item.otaType, jdbcType=VARCHAR},
+			<choose>
+				<when test="item.created != null and item.created != ''">
+				    str_to_date(#{item.created}, '%Y-%m-%d %H:%i:%s'),
+				</when>
+				<otherwise>
+					now(),
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="item.modified != null and item.modified != ''">
+				    str_to_date(#{item.modified}, '%Y-%m-%d %H:%i:%s')
+				</when>
+				<otherwise>
+					now()
+				</otherwise>
+			</choose>	
+		)			
+		</foreach>
+	</insert>
+
+	<insert id="addDeviceOtaStatusContentLog">
+		insert into device_ota_status_contents(
+		    device_ota_status_id,
+		    content
+		) values
+		<foreach collection="list" item="item" separator=",">
+		  (
+			#{item.deviceOtaStatusId, jdbcType=NUMERIC},
+			#{item.content, jdbcType=VARCHAR}
+		  )
+		</foreach>
+	</insert>
+
+	<insert id="addDialerCallLog">
+		insert into dialer_call_logs(
+			device_user_id,
+			number,
+			call_type,
+			phone_type,
+			duration
+		) values		
+		<foreach collection="list" item="item" separator=",">
+		(
+			#{item.deviceUserId, jdbcType=NUMERIC},
+			#{item.number, jdbcType=VARCHAR},
+			#{item.callType, jdbcType=VARCHAR},
+			#{item.phoneType, jdbcType=VARCHAR},
+			#{item.duration, jdbcType=NUMERIC}
+		)
+		</foreach>
+	</insert>
+
+	<insert id="addImportLog">
+		insert into import_logs(
+		    type,
+		    user_id,
+		    s3_file_key,
+		    data,
+		    created,
+		    updated
+		) values
+		<foreach collection="list" item="item" separator=",">
+		  (
+			#{item.type, jdbcType=VARCHAR},
+			#{item.userId, jdbcType=NUMERIC},
+			#{item.s3FileKey, jdbcType=VARCHAR},
+			#{item.data, jdbcType=VARCHAR},
+			<choose>
+				<when test="item.created != null and item.created!= ''">
+				    str_to_date(#{item.created}, '%Y-%m-%d %H:%i:%s'),
+				</when>
+				<otherwise>
+					now(),
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="item.updated != null and item.updated!= ''">
+				    str_to_date(#{item.updated}, '%Y-%m-%d %H:%i:%s')
+				</when>
+				<otherwise>
+					now()
+				</otherwise>
+			</choose>	
+		)		
+		</foreach>
+	</insert>
+
+</mapper>
