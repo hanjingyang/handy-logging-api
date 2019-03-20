@@ -23,8 +23,6 @@ mybatis:
   
 
 server:
-  servlet:
-    context-path:/logs
   port: 8080
 
 #s3 access and bucket
