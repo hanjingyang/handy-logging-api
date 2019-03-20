@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.tinklabs.handy.mapper.LogMapper">
+<mapper namespace="com.tinklabs.handy.logs.mapper.LogMapper">
 
 	<insert id="addDeviceChangeLog" parameterType="java.util.List">
 		insert into device_change_logs(
