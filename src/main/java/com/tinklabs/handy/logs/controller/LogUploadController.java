@@ -21,7 +21,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 
 @RestController
-@RequestMapping("/uploader")
+@RequestMapping("/api/uploader")
 public class LogUploadController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
