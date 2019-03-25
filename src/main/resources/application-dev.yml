@@ -16,7 +16,12 @@ spring:
       maxLifetime: ${datasource_maxLifetime:1800000}
       maximumPoolSize: ${datasource_maximumPoolSize:15}
   profiles: dev
-  
+  #kafka
+  kafka:
+    producer:
+      bootstrap-servers: ec2-13-250-5-192.ap-southeast-1.compute.amazonaws.com:9092  
+    
+      
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   

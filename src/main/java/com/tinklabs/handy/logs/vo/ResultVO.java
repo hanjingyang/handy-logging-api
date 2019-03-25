@@ -65,6 +65,10 @@ public class ResultVO implements Serializable{
 	public static ResultVO fail(String code,String msg) {
 		return new ResultVO(code,msg,null);
 	}
+	
+	public static ResultVO fail(Errors error) {
+		return new ResultVO(error.getCode(),error.getMsg(),null);
+	}
 
 	public String getCode() {
 		return code;
