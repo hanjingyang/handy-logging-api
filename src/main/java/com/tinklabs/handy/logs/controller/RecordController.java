@@ -13,7 +13,7 @@ import com.tinklabs.handy.logs.constants.LogType;
 import com.tinklabs.handy.logs.exception.BusinessException;
 
 @RestController
-@RequestMapping(value = "/logs/api")
+@RequestMapping(value = "/api/logs/")
 public class RecordController extends BaseController {
 
     @RequestMapping(value = "/record")
@@ -30,5 +30,4 @@ public class RecordController extends BaseController {
         }
         return outputSuccess(status);
     }
-
 }
