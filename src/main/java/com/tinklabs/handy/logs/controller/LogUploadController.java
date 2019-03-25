@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +22,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 
 @RestController
-@RequestMapping("/api/uploader")
+@RequestMapping("/api/file_upload")
 public class LogUploadController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -36,7 +37,7 @@ public class LogUploadController {
 	@Autowired
 	private S3Service s3Service;
 
-	@RequestMapping("/upload")
+	@RequestMapping(method=RequestMethod.POST)
 	public ResultVO uploadLog(@RequestParam("file") MultipartFile multipartFile) {
 		// 构建文件描述信息
 		ObjectMetadata metadata = new ObjectMetadata();
