@@ -8,10 +8,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tinklabs.handy.logs.enums.Errors;
 import com.tinklabs.handy.logs.vo.ResultVO;
 
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
@@ -33,8 +30,12 @@ public class LogTraceController {
 
 	@Autowired
 	private KafkaTemplate<String, String> kafkaTemplate;
-
-	private String restUrl = "http://ec2-13-250-5-192.ap-southeast-1.compute.amazonaws.com:8082/topics/backend2-hangpan-test";
+	
+	@Value("${log.trace.kafka.topic}")
+	private String traceLogTopic;
+	
+	@Value("${log.trace.kafka.url}")
+	private String restUrl;
 
 	/**
 	 * @description: 通过客户端发送消息
@@ -45,10 +46,10 @@ public class LogTraceController {
 	 * @param data
 	 * @return
 	 */
-	@RequestMapping(value = "/{topic}", method = RequestMethod.POST)
-	public ResultVO sendTraceLog(@PathVariable("topic") String topic, @RequestBody Map<String, Object> data) {
+	@RequestMapping( method = RequestMethod.POST)
+	public ResultVO sendTraceLog( @RequestBody Map<String, Object> data) {
 		logger.debug("in sendTraceLog.");
-		if (data == null || data.isEmpty() || StrUtil.isEmpty(topic)) {
+		if (data == null || data.isEmpty()) {
 			// 如果提交参数为空，返回错误
 			logger.debug("request body parameter empty.");
 			return ResultVO.fail(Errors.PARAMS_EMPTY);
@@ -57,11 +58,9 @@ public class LogTraceController {
 		String dataStr = JSONUtil.toJsonStr(data);
 		logger.info("recived data: " + dataStr);
 		// 发送消息文本
-		ListenableFuture<SendResult<String, String>> result = kafkaTemplate.send(topic, dataStr);
 		try {
-			//读取结果
-			String resultStr = result.get().toString();
-			return ResultVO.success(resultStr);
+			kafkaTemplate.send(traceLogTopic, dataStr);
+			return ResultVO.success(null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResultVO.fail("500", e.getMessage());
@@ -77,10 +76,10 @@ public class LogTraceController {
 	 * @param data
 	 * @return
 	 */
-	@RequestMapping(value = "rest/{topic}", method = RequestMethod.POST)
-	public ResultVO sendRestTraceLog(@PathVariable("topic") String topic, @RequestBody Map<String, Object> data) {
+	@RequestMapping(value = "rest", method = RequestMethod.POST)
+	public ResultVO sendRestTraceLog( @RequestBody Map<String, Object> data) {
 		logger.debug("in sendTraceLog.");
-		if (data == null || data.isEmpty() || StrUtil.isEmpty(topic)) {
+		if (data == null || data.isEmpty()) {
 			// 如果提交参数为空，返回错误
 			logger.debug("request body parameter empty.");
 			return ResultVO.fail(Errors.PARAMS_EMPTY);
@@ -103,7 +102,7 @@ public class LogTraceController {
 		HttpResponse result;
 		try {
 			result = HttpUtil.createPost(restUrl).header("Content-Type", "application/vnd.kafka.v2+json")
-					.body(JSONUtil.toJsonStr(records)).execute();
+					.timeout(2000).body(JSONUtil.toJsonStr(records)).execute();
 			return ResultVO.success(result.body());
 		} catch (Exception e) {
 			e.printStackTrace();
