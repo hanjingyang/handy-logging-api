@@ -36,6 +36,9 @@ public class LogTraceController {
 	
 	@Value("${log.trace.kafka.url}")
 	private String restUrl;
+	
+	@Value("${log.trace.local}")
+	private boolean localSave;
 
 	/**
 	 * @description: 通过客户端发送消息
