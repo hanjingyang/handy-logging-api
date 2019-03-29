@@ -30,24 +30,24 @@ import com.tinklabs.handy.logs.service.LogServiceFactory;
  */
 public class LogQueue {
 
-    private Logger                 logger        = LoggerFactory.getLogger(LogQueue.class);
+    private Logger           logger        = LoggerFactory.getLogger(LogQueue.class);
 
-    private LogService<Log>        logService;
+    private LogService<Log>  logService;
 
     /**
      * 批量打包
      */
-    private final static int       BATCH_COUNT   = 10;
+    private final static int BATCH_COUNT   = 10;
 
     /**
      * 当前打包计时
      */
-    private static int             CURRENT_COUNT = 0;
+    private static int       CURRENT_COUNT = 0;
 
     /**
      * 打包用缓存
      */
-    private final static List<Log> LOG_CACHE     = new ArrayList<>();
+    private List<Log>        log_cache     = new ArrayList<>();
 
     private LogQueue(LogType logType) throws BusinessException {
         LogServiceFactory factory = SpringContextContainer.getApplicationContext().getBean(LogServiceFactory.class);
@@ -132,12 +132,12 @@ public class LogQueue {
         while (true) {
             try {
                 Log log = logs.take();
-                LOG_CACHE.add(log);
+                log_cache.add(log);
                 /* 异步批量入库 */
                 if (++CURRENT_COUNT >= BATCH_COUNT) {
                     List tmp = logService.getTmpCacheArr(CURRENT_COUNT);
-                    tmp.addAll(LOG_CACHE);
-                    LOG_CACHE.clear();
+                    tmp.addAll(log_cache);
+                    log_cache.clear();
                     CURRENT_COUNT = 0;
                     executor.execute(new Runnable() {
 
