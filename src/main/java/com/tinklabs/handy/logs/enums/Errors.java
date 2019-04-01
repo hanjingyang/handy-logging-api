@@ -1,8 +1,15 @@
 package com.tinklabs.handy.logs.enums;
 
-public enum Errors {
-	SUCCESS("0","success"),
-	PARAMS_EMPTY("100001","parameter(s) can not be empty."),
+import com.tinklabs.handy.base.exception.IError;
+
+/**
+ * @description: 当前应用内定义的错误信息数据
+ * @company: tinklabs
+ * @author: pengtao
+ * @date: 2019 2019年4月1日 下午2:46:08
+ */
+public enum Errors implements IError{
+	
 	//upload log file
 	UPLOADED_FILE_ERROR("001001",""),
 	AWS_SERVER_ERROR("001002","Amazon server status invalid."),

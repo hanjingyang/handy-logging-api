@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tinklabs.handy.base.exception.BaseErrors;
+import com.tinklabs.handy.base.vo.ResultVO;
 import com.tinklabs.handy.logs.enums.Errors;
-import com.tinklabs.handy.logs.vo.ResultVO;
 
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
@@ -55,7 +56,7 @@ public class LogTraceController {
 		if (data == null || data.isEmpty()) {
 			// 如果提交参数为空，返回错误
 			logger.debug("request body parameter empty.");
-			return ResultVO.fail(Errors.PARAMS_EMPTY);
+			return ResultVO.fail(BaseErrors.PARAMS_EMPTY);
 		}
 		// 转换消息为json文本
 		String dataStr = JSONUtil.toJsonStr(data);
@@ -65,8 +66,8 @@ public class LogTraceController {
 			kafkaTemplate.send(traceLogTopic, dataStr);
 			return ResultVO.success(null);
 		} catch (Exception e) {
-			e.printStackTrace();
-			return ResultVO.fail("500", e.getMessage());
+			logger.error("sendTraceLog with kafka client error. ",e);
+			return ResultVO.fail(BaseErrors.SYSTEM_EXCEPTION);
 		}
 	}
 
@@ -85,7 +86,7 @@ public class LogTraceController {
 		if (data == null || data.isEmpty()) {
 			// 如果提交参数为空，返回错误
 			logger.debug("request body parameter empty.");
-			return ResultVO.fail(Errors.PARAMS_EMPTY);
+			return ResultVO.fail(BaseErrors.PARAMS_EMPTY);
 		}
 		// 转换消息为json文本
 		String dataStr = JSONUtil.toJsonStr(data);
@@ -108,8 +109,8 @@ public class LogTraceController {
 					.timeout(2000).body(JSONUtil.toJsonStr(records)).execute();
 			return ResultVO.success(result.body());
 		} catch (Exception e) {
-			e.printStackTrace();
-			return ResultVO.fail("500", e.getMessage());
+			logger.error("sendTraceLog with kafka rest-api error. ",e);
+			return ResultVO.fail(BaseErrors.SYSTEM_EXCEPTION);
 		}
 
 	}

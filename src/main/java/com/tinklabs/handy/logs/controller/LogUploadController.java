@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.tinklabs.handy.base.vo.ResultVO;
 import com.tinklabs.handy.logs.configuration.S3Properties;
 import com.tinklabs.handy.logs.enums.Errors;
 import com.tinklabs.handy.logs.service.S3Service;
-import com.tinklabs.handy.logs.vo.ResultVO;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
@@ -49,7 +49,7 @@ public class LogUploadController {
 		logger.debug("upload file name is: " + fileName);
 		// 校验文件类型是否允许上传
 		if (!checkFileType(fileName)) {
-			return ResultVO.fail(Errors.UPLOADED_FILE_TYPE_ERROR.getCode(), Errors.UPLOADED_FILE_TYPE_ERROR.getMsg());
+			return ResultVO.fail(Errors.UPLOADED_FILE_TYPE_ERROR);
 		}
 
 		try {
@@ -57,14 +57,14 @@ public class LogUploadController {
 			String url = s3Service.uploadToS3(multipartFile.getInputStream(), metadata, getRemotePath(fileName));
 			// 如果上传服务返回空，即为上传失败
 			if (url == null) {
-				return ResultVO.fail(Errors.AWS_SERVER_ERROR.getCode(), Errors.AWS_SERVER_ERROR.getMsg());
+				return ResultVO.fail(Errors.AWS_SERVER_ERROR);
 			}
 			// 否则为上传成功，将文件下载URL返回给前台
 			logger.debug("upload file to s3 success.");
 			return ResultVO.success(url);
 		} catch (Exception e) {
 			logger.error("get input stream from MultipartFile error.", e);
-			return ResultVO.fail(Errors.UPLOADED_FILE_ERROR.getCode(), e.getMessage());
+			return ResultVO.fail(Errors.UPLOADED_FILE_ERROR);
 		}
 	}
 
