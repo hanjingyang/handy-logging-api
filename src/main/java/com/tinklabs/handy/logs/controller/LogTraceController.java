@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tinklabs.handy.base.exception.BaseErrors;
 import com.tinklabs.handy.base.vo.ResultVO;
-import com.tinklabs.handy.logs.enums.Errors;
 
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
