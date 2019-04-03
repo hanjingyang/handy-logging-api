@@ -9,11 +9,12 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
-import com.tinklabs.handy.logs.base.SpringContextContainer;
+import com.tinklabs.handy.base.context.SpringContextContainer;
 import com.tinklabs.handy.logs.bean.Log;
 import com.tinklabs.handy.logs.constants.LogType;
 import com.tinklabs.handy.logs.exception.BusinessException;
