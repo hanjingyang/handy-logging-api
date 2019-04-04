@@ -6,28 +6,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.tinklabs.handy.logs.base.BaseController;
-import com.tinklabs.handy.logs.bean.Results;
+import com.tinklabs.handy.base.exception.BusinessException;
+import com.tinklabs.handy.base.vo.ResultVO;
 import com.tinklabs.handy.logs.cache.LogQueue;
 import com.tinklabs.handy.logs.constants.LogType;
-import com.tinklabs.handy.logs.exception.BusinessException;
+import com.tinklabs.handy.logs.enums.BizErrors;
 
 @RestController
 @RequestMapping(value = "/api/logs/")
-public class RecordController extends BaseController {
+public class RecordController  {
 
     @RequestMapping(value = "/record")
-    public Results record(@RequestBody JSONObject log) {
+    public ResultVO record(@RequestBody JSONObject log) {
         LogType logType = null;
         if (log == null || StringUtils.isEmpty(log.getString("logType")) || (logType = LogType.search(log.getIntValue("logType"))) == null) {
-            return outputFailure("1000", "the log type not found!");
+            return ResultVO.fail(BizErrors.LOT_TYPE_NOT_FOUND);
         }
         boolean status = false;
         try {
             status = LogQueue.newInstance(logType).push(log);
         } catch (BusinessException e) {
-            return outputFailure(String.valueOf(e.getCode()), e.getMessage());
+            return ResultVO.fail(e.getError(), e.getMessage());
         }
-        return outputSuccess(status);
+        return ResultVO.success(status);
     }
 }

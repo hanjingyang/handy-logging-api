@@ -15,9 +15,10 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
 import com.tinklabs.handy.base.context.SpringContextContainer;
+import com.tinklabs.handy.base.exception.BusinessException;
 import com.tinklabs.handy.logs.bean.Log;
 import com.tinklabs.handy.logs.constants.LogType;
-import com.tinklabs.handy.logs.exception.BusinessException;
+import com.tinklabs.handy.logs.enums.BizErrors;
 import com.tinklabs.handy.logs.service.LogService;
 import com.tinklabs.handy.logs.service.LogServiceFactory;
 
@@ -55,7 +56,7 @@ public class LogQueue {
         /* 初始化执行类 */
         this.logService = factory.getLogService(logType);
         if (logService == null) {
-            throw new BusinessException(1001, "the log type is not found!");
+            throw new BusinessException(BizErrors.LOT_TYPE_NOT_FOUND);
         }
 
         logger.info("instance queue:{}", logType);
@@ -113,7 +114,7 @@ public class LogQueue {
      */
     public boolean push(JSONObject log) throws BusinessException {
         if (!logService.valid(log.toJavaObject(logService.getClazz()))) {
-            throw new BusinessException(1001, "the log params is no valid.");
+            throw new BusinessException(BizErrors.PARAMETER_ILLEGAL, "the log params is no valid.");
         }
         return logs.add((Log) log.toJavaObject(logService.getClazz()));
     }
