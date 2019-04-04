@@ -104,12 +104,13 @@ public class LogTraceController {
 		// 发送消息文本
 		HttpResponse result;
 		try {
+			logger.info("rest url: " + restUrl);
 			result = HttpUtil.createPost(restUrl).header("Content-Type", "application/vnd.kafka.v2+json")
 					.timeout(2000).body(JSONUtil.toJsonStr(records)).execute();
 			return ResultVO.success(result.body());
 		} catch (Exception e) {
 			logger.error("sendTraceLog with kafka rest-api error. ",e);
-			return ResultVO.fail(BaseErrors.SYSTEM_EXCEPTION);
+			return ResultVO.fail(BaseErrors.SYSTEM_EXCEPTION,e.getMessage());
 		}
 
 	}
