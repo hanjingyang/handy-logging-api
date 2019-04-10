@@ -2,13 +2,10 @@
 spring:
   application:
     name: handy-logs
-  datasource:
-      #url: ${datasource_url:jdbc:mysql://handy-staging.csojfhhlojxj.ap-southeast-1.rds.amazonaws.com:3306/backend2?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false}
-      url: ${datasource_url:jdbc:mysql://localhost:3306/backend2?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false}
-      #username: ${datasource_username:admin}
-      username: root
-      #password: ${datasource_password:mango1501}
-      password: abc123
+  datasource: 
+      url: ${datasource_url:jdbc:mysql://handy-staging.csojfhhlojxj.ap-southeast-1.rds.amazonaws.com:3306/backend2?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false}
+      username: ${datasource_username:admin}
+      password: ${datasource_password:mango1501}
       driverClassName: com.mysql.cj.jdbc.Driver
       type: com.zaxxer.hikari.HikariDataSource
       connectionTimeout: ${datasource_connectionTimeout:5000}
