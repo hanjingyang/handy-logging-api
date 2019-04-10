@@ -14,7 +14,9 @@ import com.tinklabs.handy.logs.enums.BizErrors;
 
 @RestController
 @RequestMapping(value = "/api/logs/")
+
 public class RecordController  {
+
 
     @RequestMapping(value = "/record")
     public ResultVO record(@RequestBody JSONObject log) {

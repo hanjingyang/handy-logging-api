@@ -2,6 +2,7 @@
 spring:
   application:
     name: handy-logs
+
   datasource:
       url: ${datasource_url:jdbc:mysql://handy-staging.csojfhhlojxj.ap-southeast-1.rds.amazonaws.com:3306/backend2?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false}
       username: ${datasource_username:admin}
