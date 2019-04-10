@@ -37,7 +37,7 @@ public class LogQueue {
     /**
      * 批量打包
      */
-    private final static int       BATCH_COUNT   = 10;
+    private final static int       BATCH_COUNT   = 1;
 
     /**
      * 当前打包计时
@@ -99,7 +99,6 @@ public class LogQueue {
     private BlockingQueue<Log> logs = new LinkedBlockingQueue<>();
 
     /**
-     * 
      * @description: 添加日志到队列
      * @copyright: Copyright (c) 2019
      * @company: tinklabs
@@ -149,7 +148,7 @@ public class LogQueue {
                     });
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error("", e);
             }
 
         }
