@@ -9,14 +9,16 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
-import com.tinklabs.handy.logs.base.SpringContextContainer;
+import com.tinklabs.handy.base.context.SpringContextContainer;
+import com.tinklabs.handy.base.exception.BusinessException;
 import com.tinklabs.handy.logs.bean.Log;
 import com.tinklabs.handy.logs.constants.LogType;
-import com.tinklabs.handy.logs.exception.BusinessException;
+import com.tinklabs.handy.logs.enums.BizErrors;
 import com.tinklabs.handy.logs.service.LogService;
 import com.tinklabs.handy.logs.service.LogServiceFactory;
 
@@ -30,31 +32,33 @@ import com.tinklabs.handy.logs.service.LogServiceFactory;
  */
 public class LogQueue {
 
-    private Logger                 logger        = LoggerFactory.getLogger(LogQueue.class);
+    private Logger           logger        = LoggerFactory.getLogger(LogQueue.class);
 
-    private LogService<Log>        logService;
+    private LogService<Log>  logService;
 
     /**
      * 批量打包
      */
+
     private final static int       BATCH_COUNT   = 1;
+
 
     /**
      * 当前打包计时
      */
-    private static int             CURRENT_COUNT = 0;
+    private static int       CURRENT_COUNT = 0;
 
     /**
      * 打包用缓存
      */
-    private final static List<Log> LOG_CACHE     = new ArrayList<>();
+    private List<Log>        log_cache     = new ArrayList<>();
 
     private LogQueue(LogType logType) throws BusinessException {
         LogServiceFactory factory = SpringContextContainer.getApplicationContext().getBean(LogServiceFactory.class);
         /* 初始化执行类 */
         this.logService = factory.getLogService(logType);
         if (logService == null) {
-            throw new BusinessException(1001, "the log type is not found!");
+            throw new BusinessException(BizErrors.LOT_TYPE_NOT_FOUND);
         }
 
         logger.info("instance queue:{}", logType);
@@ -111,7 +115,7 @@ public class LogQueue {
      */
     public boolean push(JSONObject log) throws BusinessException {
         if (!logService.valid(log.toJavaObject(logService.getClazz()))) {
-            throw new BusinessException(1001, "the log params is no valid.");
+            throw new BusinessException(BizErrors.PARAMETER_ILLEGAL, "the log params is no valid.");
         }
         return logs.add((Log) log.toJavaObject(logService.getClazz()));
     }
@@ -131,12 +135,12 @@ public class LogQueue {
         while (true) {
             try {
                 Log log = logs.take();
-                LOG_CACHE.add(log);
+                log_cache.add(log);
                 /* 异步批量入库 */
                 if (++CURRENT_COUNT >= BATCH_COUNT) {
                     List tmp = logService.getTmpCacheArr(CURRENT_COUNT);
-                    tmp.addAll(LOG_CACHE);
-                    LOG_CACHE.clear();
+                    tmp.addAll(log_cache);
+                    log_cache.clear();
                     CURRENT_COUNT = 0;
                     executor.execute(new Runnable() {
 
