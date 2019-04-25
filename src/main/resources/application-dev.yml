@@ -4,9 +4,9 @@ spring:
     name: handy-logs
 
   datasource:
-      url: ${datasource_url:jdbc:mysql://handy-staging.csojfhhlojxj.ap-southeast-1.rds.amazonaws.com:3306/backend2?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false}
-      username: ${datasource_username:admin}
-      password: ${datasource_password:mango1501}
+      url: ${datasource_url:jdbc:mysql://handy-logging-aurora-uat.cluster-csojfhhlojxj.ap-southeast-1.rds.amazonaws.com:3306/backend2?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false}
+      username: ${datasource_username:tinklabs_db1}
+      password: ${datasource_password:Watwat6824}
       driverClassName: com.mysql.cj.jdbc.Driver
       type: com.zaxxer.hikari.HikariDataSource
       connectionTimeout: ${datasource_connectionTimeout:5000}
@@ -22,13 +22,13 @@ spring:
   #kafka
   kafka:
     producer:
-      bootstrap-servers: handy-internal-kafka-test.handy.travel:9092  
-    
-      
+      bootstrap-servers: handy-internal-kafka-test.handy.travel:9092
+
+
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  
-  
+
+
 
 server:
   port: 8080
@@ -51,5 +51,4 @@ log:
     kafka:
       topic: backend2-hangpan-test
       url: http://handy-internal-kafka-test.handy.travel:8082/topics/backend2-hangpan-test
-    
-    
+
