@@ -36,8 +36,8 @@ server:
 #s3 access and bucket
 aws:
   s3:
-    accesskey: AKIAJ7EI4ETZJB3RRI4Q
-    secretkey: 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
+    accesskey: AKIAS7EXJMYWXAQK6FWD
+    secretkey: 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
     bucketname: handy-backend-logs-dev
 #maxfilesize unit MB
     maxfilesize: 20
