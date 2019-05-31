@@ -51,5 +51,7 @@ log:
     kafka:
       topic: backend2-hangpan-test
       url: http://handy-internal-kafka-test.handy.travel:8082/topics/backend2-hangpan-test
+      analysis:
+        url: http://handy-internal-kafka-test.handy.travel:8082/topics/backend2-hangpan-test
     
     

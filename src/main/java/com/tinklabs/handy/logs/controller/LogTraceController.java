@@ -1,5 +1,6 @@
 package com.tinklabs.handy.logs.controller;
 
+import com.tinklabs.handy.logs.constants.TopicType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,9 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tinklabs.handy.base.exception.BaseErrors;
@@ -36,6 +39,9 @@ public class LogTraceController {
 	
 	@Value("${log.trace.kafka.url}")
 	private String restUrl;
+
+	@Value("${log.trace.kafka.analysis.url}")
+	private String analysisRestUrl;
 	
 	@Value("${log.trace.local}")
 	private boolean localSave;
@@ -80,8 +86,9 @@ public class LogTraceController {
 	 * @return
 	 */
 	@RequestMapping(value = "rest", method = RequestMethod.POST)
-	public ResultVO sendRestTraceLog( @RequestBody Map<String, Object> data) {
-		logger.debug("in sendTraceLog.");
+	public ResultVO sendRestTraceLog( @RequestBody Map<String, Object> data,
+			@RequestParam("topic") String topic) {
+		logger.debug("topic=" + topic);
 		if (data == null || data.isEmpty()) {
 			// 如果提交参数为空，返回错误
 			logger.debug("request body parameter empty.");
@@ -104,8 +111,17 @@ public class LogTraceController {
 		// 发送消息文本
 		HttpResponse result;
 		try {
-			logger.info("rest url: " + restUrl);
-			result = HttpUtil.createPost(restUrl).header("Content-Type", "application/vnd.kafka.v2+json")
+			String url = restUrl;
+			if (!StringUtils.isEmpty(topic) && TopicType.ANALYSIS_HANDY.equals(topic.trim())) {
+				url = analysisRestUrl;
+			}
+			logger.info("rest url: " + url);
+			if (StringUtils.isEmpty(url)) {
+				logger.debug("rest url empty.");
+				return ResultVO.fail(BaseErrors.BUSINESS_EXCEPTION);
+			}
+
+			result = HttpUtil.createPost(url).header("Content-Type", "application/vnd.kafka.v2+json")
 					.timeout(2000).body(JSONUtil.toJsonStr(records)).execute();
 			return ResultVO.success(result.body());
 		} catch (Exception e) {
