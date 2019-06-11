@@ -36,8 +36,8 @@ server:
 #s3 access and bucket
 aws:
   s3:
-    accesskey: AKIAJ7EI4ETZJB3RRI4Q
-    secretkey: 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
+    accesskey: AKIAS7EXJMYWXAQK6FWD
+    secretkey: 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
     bucketname: handy-backend-logs-dev
 #maxfilesize unit MB
     maxfilesize: 20
@@ -51,5 +51,7 @@ log:
     kafka:
       topic: backend2-hangpan-test
       url: http://handy-internal-kafka-test.handy.travel:8082/topics/backend2-hangpan-test
+      analysis:
+        url: http://handy-internal-kafka-test.handy.travel:8082/topics/backend2-hangpan-test
     
     
