@@ -9,7 +9,7 @@
     <appender name="fileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${logback.logdir}/${logback.appname}/info.log</File>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>ERROR</level>
+            <level>DEBUG</level>
             <onMatch>DENY</onMatch>
             <onMismatch>ACCEPT</onMismatch>
         </filter>
@@ -55,7 +55,7 @@
     
     <logger name="org.springframework" level="WARN" />
     
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="fileInfoLog"/>
         <appender-ref ref="fileErrorLog"/>
         <appender-ref ref="console"/>

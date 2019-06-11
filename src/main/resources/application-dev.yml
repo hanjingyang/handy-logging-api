@@ -2,7 +2,8 @@
 spring:
   application:
     name: handy-logs
-  datasource: 
+
+  datasource:
       url: ${datasource_url:jdbc:mysql://handy-staging.csojfhhlojxj.ap-southeast-1.rds.amazonaws.com:3306/backend2?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false}
       username: ${datasource_username:admin}
       password: ${datasource_password:mango1501}
@@ -13,7 +14,17 @@ spring:
       maxLifetime: ${datasource_maxLifetime:1800000}
       maximumPoolSize: ${datasource_maximumPoolSize:15}
   profiles: dev
-  
+  main:
+    allow-bean-definition-overriding: true
+  #zipkin
+  zipkin:
+    base-url: http://ec2-13-250-5-192.ap-southeast-1.compute.amazonaws.com:9411
+  #kafka
+  kafka:
+    producer:
+      bootstrap-servers: handy-internal-kafka-test.handy.travel:9092  
+    
+      
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   
@@ -25,10 +36,22 @@ server:
 #s3 access and bucket
 aws:
   s3:
-    accesskey: AKIAJ7EI4ETZJB3RRI4Q
-    secretkey: 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
+    accesskey: AKIAS7EXJMYWXAQK6FWD
+    secretkey: 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
     bucketname: handy-backend-logs-dev
 #maxfilesize unit MB
     maxfilesize: 20
 #allow file type ext
     allowext: log,zip,rar,txt
+
+#trace log topic
+log:
+  trace:
+    local: true
+    kafka:
+      topic: backend2-hangpan-test
+      url: http://handy-internal-kafka-test.handy.travel:8082/topics/backend2-hangpan-test
+      analysis:
+        url: http://handy-internal-kafka-test.handy.travel:8082/topics/backend2-hangpan-test
+    
+    
