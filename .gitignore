@@ -10,7 +10,7 @@
 .settings
 .springBeans
 
-### IntelliJ IDEA ###
+### IntelliJ IDEA ####
 .idea
 *.iws
 *.iml
